@@ -239,6 +239,10 @@ bash lines/J_robusto/runeval.sh lines/J_robusto/submit_J2_min J2
 Time: a baseline run takes 35 to 50 s, mostly data loading; J2 with `--strict --stress` takes 45 to 60 s per seed in the `pair` scope. Without data access, `make_synthetic.py` writes six synthetic IRT benchmarks with the same layout, and `--data data/synthetic` runs everything.
 
 
+### Disclosure
+
+Training data: `aims-foundations/measurement-db` only [3]; no external leaderboard data. The final solution (J2) uses no pretrained model, no LLM and no external API. Pretrained models appear only in the development experiments of Section 7: Claude Sonnet and Claude Haiku (Anthropic) and GPT (OpenAI, through the Codex CLI) wrote item difficulty notes and ran the prompt experiments; Qwen3.5-4B and other open models up to 9B produced local notes; the public `measurement-db-embed` embeddings (text-embedding-3-small) fed the text regression. Coding assistants: the code, the experiments and drafts of this report were written with LLM coding agents (Claude Code, with Claude Opus, Sonnet and Haiku, and OpenAI Codex) under the author's direction.
+
 ## References
 
 [1] AIMS Lab, Stanford. "Predictive AI Evaluation Competition." https://aimslab.stanford.edu/competition (accessed 2026-10-13).
