@@ -1,0 +1,8 @@
+[{"name":"l0","dir":"jm","cfg":{"lam":0.0}},
+ {"name":"l3","dir":"jm","cfg":{"lam":0.3}},
+ {"name":"l6","dir":"jm","cfg":{"lam":0.6}},
+ {"name":"l10w","dir":"jm","cfg":{"lam":1.0,"lev_lo":0.05,"lev_hi":0.95}},
+ {"name":"l6_ms1","dir":"jm","cfg":{"lam":0.6,"m_shrink":1.0}},
+ {"name":"l3_ms1_vb8","dir":"jm","cfg":{"lam":0.3,"m_shrink":1.0,"varb_mult":8}},
+ {"name":"l0_ms1_vb8","dir":"jm","cfg":{"lam":0.0,"m_shrink":1.0,"varb_mult":8}},
+ {"name":"l6_vp2","dir":"jm","cfg":{"lam":0.6,"varp_mult":2}}]

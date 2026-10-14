@@ -1,0 +1,7 @@
+[{"name":"l10w_vp2","dir":"jm","cfg":{"lam":1.0,"lev_lo":0.05,"lev_hi":0.95,"varp_mult":2}},
+ {"name":"l6_t3","dir":"jm","cfg":{"lam":0.6,"temp_a":0.3}},
+ {"name":"l10w_t3","dir":"jm","cfg":{"lam":1.0,"lev_lo":0.05,"lev_hi":0.95,"temp_a":0.3}},
+ {"name":"l6_ms1_vp2","dir":"jm","cfg":{"lam":0.6,"m_shrink":1.0,"varp_mult":2}},
+ {"name":"min_a1","dir":"jmin","cfg":{"a":1}},
+ {"name":"min_a2","dir":"jmin","cfg":{"a":2}},
+ {"name":"min_a4","dir":"jmin","cfg":{"a":4}}]

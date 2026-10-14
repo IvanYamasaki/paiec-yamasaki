@@ -1,0 +1,4 @@
+[{"name":"J4_vb8","dir":"jm","cfg":{"lam":0.3,"lev_lo":0.05,"m_shrink":1.0,"varb_mult":8,"use_meta":0}},
+ {"name":"J4_vb8_vp2","dir":"jm","cfg":{"lam":0.3,"lev_lo":0.05,"m_shrink":1.0,"varb_mult":8,"use_meta":0,"varp_mult":2}},
+ {"name":"J4_l10_vp2","dir":"jm","cfg":{"lam":1.0,"lev_lo":0.05,"m_shrink":1.0,"varb_mult":8,"use_meta":0,"varp_mult":2}},
+ {"name":"J2","dir":"jmin","cfg":{"a":2}}]

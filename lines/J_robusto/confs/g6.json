@@ -1,0 +1,3 @@
+[{"name":"l3_ms1_vb8_vp2","dir":"jm","cfg":{"lam":0.3,"m_shrink":1.0,"varb_mult":8,"varp_mult":2}},
+ {"name":"l3_ms07_vb8","dir":"jm","cfg":{"lam":0.3,"m_shrink":0.7,"varb_mult":8}},
+ {"name":"min_a15","dir":"jmin","cfg":{"a":1.5}}]

@@ -1,0 +1,9 @@
+data/
+.venv/
+.hf_token
+*.parquet
+paiec_baseline/
+results/
+__pycache__/
+*.pyc
+*.pkl

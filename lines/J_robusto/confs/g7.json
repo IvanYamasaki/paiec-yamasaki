@@ -1,0 +1,4 @@
+[{"name":"J1","dir":"jm","cfg":{"lam":0.3,"m_shrink":1.0,"varb_mult":8}},
+ {"name":"J3_b1","dir":"jm","cfg":{"lam":0.3,"m_shrink":1.0,"varb_mult":8,"blend_k0":1.0}},
+ {"name":"J3_b3","dir":"jm","cfg":{"lam":0.3,"m_shrink":1.0,"varb_mult":8,"blend_k0":3.0}},
+ {"name":"J3_nm_b1","dir":"jm","cfg":{"lam":0.3,"m_shrink":1.0,"varb_mult":8,"blend_k0":1.0,"use_meta":0}}]
