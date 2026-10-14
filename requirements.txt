@@ -5,3 +5,4 @@ scikit-learn==1.9.1
 scipy==1.18.1
 huggingface_hub==2.1.1
 requests==2.34.2
+matplotlib>=3.8  # report/make_fig.py only

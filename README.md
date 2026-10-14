@@ -43,7 +43,7 @@ bash lines/J_robusto/runeval.sh lines/J_robusto/submit_J2_min J2
 
 ## What is not here
 
-The raw per-round Codabench score files (`formativo/metrics/`), the data, run outputs, and the LLM-generated item notes and scores used in development are left out. `formativo/RESULTADOS.md` has the formative-phase results. The A v6 model reads an optional notes file and runs without it. The draft cites a few internal analysis scripts (for example `advisor/check4_prior_shift.py`) that are not part of this repository.
+The raw per-round Codabench score files (`formativo/metrics/`), the data, run outputs, and the LLM-generated item notes and scores used in development are left out. `formativo/RESULTADOS.md` has the formative-phase results. The A v6 model reads an optional notes file and runs without it. `advisor/check4_prior_shift.py` reproduces the prior-shift check cited in the report.
 
 ## License
 
