@@ -15,7 +15,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.join(HERE, "build")
 MODE = sys.argv[1] if len(sys.argv) > 1 else "preprint"
-REPO_URL = "[TBD: public repository URL]"  # set when the GitHub repository is created
+REPO_URL = "https://github.com/IvanYamasaki/paiec-yamasaki"
 
 UNI = {
     "θ": r"$\theta$", "μ": r"$\mu$", "λ": r"$\lambda$", "≥": r"$\geq$", "≤": r"$\leq$", "→": r"$\rightarrow$",
@@ -183,7 +183,8 @@ PREAMBLE = r"""\documentclass{article}
 
 def main():
     md = open(os.path.join(HERE, "draft.md"), encoding="utf8").read()
-    md = md.replace("{REPO_URL}", "anonymized for review" if MODE == "submission" else REPO_URL)
+    if MODE == "submission":
+        md = md.replace(REPO_URL + " (branch main)", "anonymized for review").replace(REPO_URL, "anonymized for review")
     if MODE == "submission":
         # COLM's submission option already hides \author; drop the team name and e-mail from the text too
         md = md.replace("Team Yamasaki", "Anonymous team").replace("ivangyamasaki@gmail.com", "")
