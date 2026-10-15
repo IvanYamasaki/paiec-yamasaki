@@ -2,11 +2,11 @@
 
 Team Yamasaki. Ivan Goya Yamasaki, Instituto Tecnológico de Aeronáutica (ITA), Brazil, ivangyamasaki@gmail.com.
 
-Technical report for the Predictive AI Evaluation Competition (PAIEC), NeurIPS 2026 workshop. Draft v4, 2026-10-14. [CORTE] marks numbers that change when the formative runs are frozen on 2026-10-25; `report/make_table3.py` regenerates Table 3 and prints the other [CORTE] values. [TBD] marks items that wait for the author.
+Technical report for the Predictive AI Evaluation Competition (PAIEC), NeurIPS 2026 workshop. Draft v5, 2026-10-15. The formative runs were frozen on 2026-10-15; `report/make_table3.py` regenerates Table 3. [TBD] marks items that wait for the author.
 
 ## Abstract
 
-PAIEC asks for the probability that an AI system solves an item from a benchmark it has never seen, given 0 to 31 revealed labels and, in `labeled`, outcomes of other sampled systems. We built a local leave-one-benchmark-out (LOBO) evaluator and used it to develop a family of Bayesian models: a Rasch model with a benchmark-level prior, system-metadata offsets, item effects learned online and an LLM difficulty note. Locally these components help; the LLM note alone takes the Brier ALC from 0.1856 to 0.1626. On the hidden test the ranking does not hold. Over [CORTE] 122 valid formative submissions on Codabench, our eight arms score between [CORTE] 0.187 and 0.207, against 0.221 for the official empirical-mean baseline. Four arms beat the baseline under a multiple-comparison correction, by 0.031 to 0.034 in Brier ALC. None of the seven comparisons between our own arms reached significance, and the largest difference among them was 0.0023. We submit the simplest arm: a Beta posterior for the pair centred on the mean label of other systems on the same benchmark, with no fitted parameter (J2, [CORTE] 0.1881, 95% CI [0.1815, 0.1947], n = 22). In the local scope closest to a formative run it was the worst of our models (0.1967). Metadata offsets are the clearest failure: removing them takes B0 from 0.318 to 0.250. We report the discrepancy, the causes we can and cannot test, and the components that did not enter the final solution. Code: https://github.com/IvanYamasaki/paiec-yamasaki.
+PAIEC asks for the probability that an AI system solves an item from a benchmark it has never seen, given 0 to 31 revealed labels and, in `labeled`, outcomes of other sampled systems. We built a local leave-one-benchmark-out (LOBO) evaluator and used it to develop a family of Bayesian models: a Rasch model with a benchmark-level prior, system-metadata offsets, item effects learned online and an LLM difficulty note. Locally these components help; the LLM note alone takes the Brier ALC from 0.1856 to 0.1626. On the hidden test the ranking does not hold. Over 185 valid formative submissions on Codabench, our eight arms score between 0.1883 and 0.2065, against 0.2161 for the official empirical-mean baseline. Four arms beat the baseline under a multiple-comparison correction, by 0.026 to 0.028 in Brier ALC. None of the seven comparisons between our own arms reached significance, and the largest difference among them was 0.0085. We submit the simplest arm: a Beta posterior for the pair centred on the mean label of other systems on the same benchmark, with no fitted parameter (J2, 0.1892, 95% CI [0.1846, 0.1938], n = 39). In the local scope closest to a formative run it was the worst of our models (0.1967). Metadata offsets are the clearest failure: removing them takes B0 from 0.318 to 0.250. We report the discrepancy, the causes we can and cannot test, and the components that did not enter the final solution. Code: https://github.com/IvanYamasaki/paiec-yamasaki.
 
 ## 1. Introduction
 
@@ -87,7 +87,7 @@ def predict(input, labeled=None):
     return float((s + CFG["a"] * p0) / (n + CFG["a"]))
 ```
 
-It imports only `json` and `os`, and `check_pack.py` measured a worst case of 4.2 ms per call with 2,542 labels in `labeled`. We submit J2 because it ties with every other arm on the hidden test (Section 6.2) and is the easiest to audit. J4 has the lowest formative mean [CORTE] and is the fallback if the frozen numbers separate the two. The organizers take the final choice by e-mail, which identifies the selected Codabench submission [1]. [TBD at the cut: final package and Codabench submission ID.]
+It imports only `json` and `os`, and `check_pack.py` measured a worst case of 4.2 ms per call with 2,542 labels in `labeled`. We submit J2 because no arm beats it under the multiple-comparison correction on the hidden test (Section 6.2) and it is the easiest to audit. J4 has the lowest formative mean (0.1883 against 0.1892), but h21 (J4 against J2) is inconclusive: difference 0.0009, 95% CI [-0.0067, 0.0082], adjusted p 1. We froze the formative phase on 2026-10-15. The final package is the J2 submission 989544 on Codabench (Brier ALC 0.1961 over 9 pairs, status Finished), whose `model.py` and `params.json` have the same sha256 as `lines/J_robusto/submit_J2_min` (`formativo/FINAL.md`). The organizers take the final choice by e-mail, which identifies the selected Codabench submission [1]. [TBD: the e-mail to the organizers is sent by the author.]
 
 ## 6. Results
 
@@ -114,75 +114,75 @@ Locally, the learned components of the A family pay. In `bench/10`, the scope cl
 
 ### 6.2 Hidden test: the formative runs
 
-From 2026-10-05 to [CORTE] 2026-10-08 we rotated nine arms through the Codabench formative phase (competition 17828, phase 29785). Each submission draws new pairs, so submissions of one arm are independent draws. Table 3 aggregates them (`paiec/formativo/RESULTADOS.md`, built by `paiec/formativo/summary.py`). About 15% of submissions ended in an infrastructure error or stayed stuck; one counts only when its scoring output has all six budgets and its mean matches the leaderboard score within 1e-5 (`paiec/formativo/rounds.py`).
+From 2026-10-05 to 2026-10-15 we rotated nine arms through the Codabench formative phase (competition 17828, phase 29785). Each submission draws new pairs, so submissions of one arm are independent draws. Table 3 aggregates them (`paiec/formativo/RESULTADOS.md`, built by `paiec/formativo/summary.py`). Of 216 submissions, 31 did not count: 24 were still queued or running at the cut and 7 failed without a complete scoring output. Another 30 ended in an infrastructure error or stayed stuck and do count; one counts only when its scoring output has all six budgets and its mean matches the leaderboard score within 1e-5 (`paiec/formativo/rounds.py`).
 
-Table 3. Formative Brier ALC per arm, as of 2026-10-13 [CORTE]. CI = mean ± 1.96·SD/√n. Regenerate with `python report/make_table3.py`.
+Table 3. Formative Brier ALC per arm, as of 2026-10-15. CI = mean ± 1.96·SD/√n. Regenerate with `python report/make_table3.py`.
 
 | arm | n | mean | 95% CI | B0 | B1 | B3 | B7 | B15 | B31 | ECE |
 |---|---|---|---|---|---|---|---|---|---|---|
-| J4 (J1 without metadata) | 25 | 0.1873 | [0.1792, 0.1954] | 0.250 | 0.207 | 0.187 | 0.173 | 0.164 | 0.160 | 0.137 |
-| J2 minimal | 22 | 0.1881 | [0.1815, 0.1947] | 0.250 | 0.208 | 0.187 | 0.173 | 0.166 | 0.163 | 0.134 |
+| J4 (J1 without metadata) | 39 | 0.1883 | [0.1825, 0.1941] | 0.250 | 0.208 | 0.188 | 0.174 | 0.166 | 0.162 | 0.135 |
 | J3 hybrid | 18 | 0.1888 | [0.1789, 0.1987] | 0.250 | 0.215 | 0.190 | 0.170 | 0.164 | 0.161 | 0.139 |
+| J2 minimal | 39 | 0.1892 | [0.1846, 0.1938] | 0.250 | 0.208 | 0.188 | 0.174 | 0.168 | 0.165 | 0.132 |
 | J1 robust level | 12 | 0.1899 | [0.1765, 0.2032] | 0.318 | 0.226 | 0.177 | 0.160 | 0.153 | 0.149 | 0.155 |
-| A v7 l0 | 15 | 0.1901 | [0.1803, 0.1998] | 0.253 | 0.216 | 0.194 | 0.171 | 0.163 | 0.159 | 0.149 |
 | A v6 (note absent on test items) | 7 | 0.1946 | [0.1806, 0.2085] | 0.246 | 0.220 | 0.196 | 0.178 | 0.173 | 0.167 | 0.133 |
+| A v7 l0 | 40 | 0.1969 | [0.1911, 0.2026] | 0.252 | 0.223 | 0.199 | 0.180 | 0.172 | 0.168 | 0.142 |
 | A v7 l3 | 5 | 0.2021 | [0.1792, 0.2251] | 0.271 | 0.225 | 0.210 | 0.183 | 0.174 | 0.167 | 0.160 |
 | A v7 l6 | 5 | 0.2065 | [0.1908, 0.2222] | 0.303 | 0.237 | 0.206 | 0.181 | 0.173 | 0.167 | 0.160 |
-| official empirical mean | 13 | 0.2210 | [0.2086, 0.2335] | 0.250 | 0.320 | 0.222 | 0.182 | 0.171 | 0.169 | 0.169 |
+| official empirical mean | 20 | 0.2161 | [0.2067, 0.2255] | 0.250 | 0.308 | 0.215 | 0.180 | 0.170 | 0.165 | 0.168 |
 
-Single submissions of the same arm vary a lot. J2 ranged from [CORTE] 0.1495 to 0.2126. With about 9 pairs per draw, the standard deviation within an arm is [CORTE] 0.016 to 0.026, larger than the 0.0113 another team reports for one artifact submitted 9 times [8]. The intervals of all our arms overlap each other.
+Single submissions of the same arm vary a lot. J2 ranged from 0.1495 to 0.2176. With about 9 pairs per draw, the standard deviation within an arm is 0.015 to 0.026, larger than the 0.0113 another team reports for one artifact submitted 9 times [8]. The intervals of all our arms overlap each other.
 
-Each comparison is a hypothesis registered in our experiment log, with Brier ALC as the metric, at least 8 submissions per arm, and a correction for multiple comparisons across the formative family. Table 4 lists the verdicts. The n in each row is the count when the verdict was declared, so it can be lower than in Table 3.
+Each comparison is a hypothesis registered in our experiment log, with Brier ALC as the metric, at least 8 submissions per arm, and a correction for multiple comparisons across the formative family. Table 4 lists the verdicts. The n in each row is the count when the verdict was declared (2026-10-15, except h20, which got no new submissions and keeps its earlier verdict). The correction family has 24 hypotheses.
 
 Table 4. Laboratory verdicts. Difference = mean of the reference arm minus mean of the tested arm; positive favours the tested arm.
 
 | id | tested arm vs reference | n (ref, tested) | difference | 95% CI | adjusted p | verdict |
 |---|---|---|---|---|---|---|
-| h23 | J4 vs empirical mean | 13, 23 | 0.0343 | [0.0206, 0.0490] | 0.002 | supported, re-checked |
-| h14 | J2 vs empirical mean | 13, 21 | 0.0334 | [0.0200, 0.0475] | 0.004 | supported, re-checked |
-| h22 | J3 vs empirical mean | 13, 18 | 0.0322 | [0.0169, 0.0480] | 0.006 | supported, re-check pending [CORTE] |
-| h17 | J1 vs empirical mean | 13, 12 | 0.0312 | [0.0135, 0.0485] | 0.034 | supported, re-checked |
-| h24 | J4 vs l0 | 12, 23 | 0.0015 | [-0.0115, 0.0139] | 1 | inconclusive |
+| h23 | J4 vs empirical mean | 20, 39 | 0.0278 | [0.0171, 0.0389] | 0.0003 | supported, earlier verdict re-checked |
+| h22 | J3 vs empirical mean | 20, 18 | 0.0273 | [0.0143, 0.0406] | 0.003 | supported, earlier verdict re-checked |
+| h14 | J2 vs empirical mean | 20, 39 | 0.0269 | [0.0171, 0.0372] | 0.0006 | supported, earlier verdict re-checked |
+| h17 | J1 vs empirical mean | 20, 12 | 0.0262 | [0.0106, 0.0419] | 0.029 | supported, earlier verdict re-checked |
+| h24 | J4 vs l0 | 40, 39 | 0.0085 | [0.0004, 0.0167] | 0.161 | inconclusive |
+| h18 | J2 vs l0 | 40, 39 | 0.0076 | [0.0003, 0.0149] | 0.188 | inconclusive |
+| h13 | J1 vs l0 | 40, 12 | 0.0070 | [-0.0075, 0.0206] | 0.789 | inconclusive |
 | h20 | J3 vs J1 | 12, 18 | 0.0011 | [-0.0146, 0.0169] | 1 | inconclusive |
-| h21 | J4 vs J2 | 21, 23 | 0.0009 | [-0.0096, 0.0114] | 1 | inconclusive |
-| h18 | J2 vs l0 | 12, 21 | 0.0006 | [-0.0117, 0.0126] | 1 | inconclusive |
-| h19 | J3 vs J2 | 21, 18 | -0.0012 | [-0.0129, 0.0106] | 1 | inconclusive |
-| h13 | J1 vs l0 | 12, 12 | -0.0016 | [-0.0183, 0.0143] | 1 | inconclusive |
-| h15 | J1 vs J2 | 21, 12 | -0.0023 | [-0.0171, 0.0117] | 1 | inconclusive |
+| h21 | J4 vs J2 | 39, 39 | 0.0009 | [-0.0067, 0.0082] | 1 | inconclusive |
+| h19 | J3 vs J2 | 39, 18 | 0.0004 | [-0.0100, 0.0110] | 1 | inconclusive |
+| h15 | J1 vs J2 | 39, 12 | -0.0007 | [-0.0147, 0.0126] | 1 | inconclusive |
 
-"Re-checked" means a separate run of the laboratory resubmitted both arms to Codabench with new draws, found the new scores inside the 95% prediction interval of each arm, and found no leak between training and test in the code. Four arms, J1 to J4, beat the official baseline. No comparison between two of our arms comes close to significance: the largest difference is 0.0023, against intervals about 0.025 wide. Comparisons that involve A v6, l3 or l6 have fewer than 8 submissions per arm and no verdict.
+"Re-checked" means a separate run of the laboratory resubmitted both arms to Codabench with new draws, found the new scores inside the 95% prediction interval of each arm, and found no leak between training and test in the code. Four arms, J1 to J4, beat the official baseline. No comparison between two of our arms is significant. J4 against l0 and J2 against l0 have bootstrap intervals whose lower bound is just above zero (0.0004 and 0.0003), but the adjusted p are 0.161 and 0.188, so both stay inconclusive. The largest difference is 0.0085. Comparisons that involve A v6, l3 or l6 have fewer than 8 submissions per arm and no usable verdict (h4 and h5 are inconclusive by that rule). The independent re-check of the verdicts declared on 2026-10-15 was still running when we closed this version.
 
 Table 5 and Figure 1 put the two rankings side by side.
 
-Table 5. Local LOBO against the formative mean. bench/10 is the local scope closest to a formative run. Formative column as of 2026-10-13 [CORTE].
+Table 5. Local LOBO against the formative mean. bench/10 is the local scope closest to a formative run. Formative column as of 2026-10-15.
 
 | arm | local pair | local bench/10 | formative | formative minus bench/10 |
 |---|---|---|---|---|
-| A v6 (note) | 0.1640 | 0.1651 | 0.1946 | +0.030 |
-| A v7 l0 | 0.1844 | 0.1808 | 0.1901 | +0.009 |
+| A v6 (note) | 0.1640 | 0.1651 | 0.1946 | +0.029 |
+| A v7 l0 | 0.1844 | 0.1808 | 0.1969 | +0.016 |
 | A v7 l3 | 0.1866 | 0.1821 | 0.2021 | +0.020 |
 | A v7 l6 | 0.1900 | 0.1841 | 0.2065 | +0.022 |
 | J1 | 0.1964 | 0.1871 | 0.1899 | +0.003 |
 | J3 | 0.1961 | 0.1875 | 0.1888 | +0.001 |
-| J4 | 0.1974 | 0.1895 | 0.1873 | -0.002 |
-| J2 | 0.1960 | 0.1967 | 0.1881 | -0.009 |
-| official empirical mean | 0.2213 | | 0.2210 | |
+| J4 | 0.1974 | 0.1895 | 0.1883 | -0.001 |
+| J2 | 0.1960 | 0.1967 | 0.1892 | -0.008 |
+| official empirical mean | 0.2213 | | 0.2161 | |
 
 ![Figure 1](fig_lobo_vs_formativo.png)
 
 Figure 1. Local `bench/10` Brier ALC (x, mean ± SD over 3 seeds) against the formative mean (y, 95% CI) for each arm. Points above the diagonal did worse on the hidden test than locally. The dashed line is the formative score of the official empirical-mean baseline. Script: `report/make_fig.py`.
 
-The official baseline, which learns nothing from the public pool, scores the same locally and on the test. The arms that lean most on the public pool lose most: A v6, l3 and l6 are 0.020 to 0.030 worse on the test than in `bench/10`. Part of the A v6 loss is mechanical. Its LLM note covers only public items and is absent on the test, so its 0.020 of local advantage over l0 in `pair` was never available there. J2 and J4, the two arms with no metadata offset, are the only ones that score better on the test than in `bench/10`, by 0.009 and 0.002. J3, which hands over to J1 and its metadata after the first labels, is level (+0.001).
+The official baseline, which learns nothing from the public pool, scores 0.2213 locally and 0.2161 on the test. The arms that lean most on the public pool lose most: A v6, l3 and l6 are 0.020 to 0.029 worse on the test than in `bench/10`. Part of the A v6 loss is mechanical. Its LLM note covers only public items and is absent on the test, so its 0.020 of local advantage over l0 in `pair` was never available there. J2 and J4, the two arms with no metadata offset, are the only ones that score better on the test than in `bench/10`, by 0.008 and 0.001. J3, which hands over to J1 and its metadata after the first labels, is level (+0.001).
 
-We had two explanations for J2 doing better on the test than locally, and both are hypotheses about data we cannot see: the hidden benchmarks may be more homogeneous inside than the public ones, or `labeled` may carry more co-sampled pairs per benchmark than our `bench/10` scope assumes. We tested the second one locally. In the benchmark scope the scored pair sets are nested, so the 31 pairs of `bench/10` are scored again with 20 and 40 co-sampled pairs per benchmark. On those 31 pairs J2 moves from 0.1967 to 0.1955 and 0.1951 (3 seeds each, all `--strict`; `report/runs/item8.py`). Most of the change is seed 2 (0.1975 to 0.1931); seeds 0 and 1 move by 0.0002. In our data, then, more co-sampled pairs account for at most 0.002 of the 0.009 by which J2 improves on the test. The first explanation, more homogeneous hidden benchmarks, remains untested.
+We had two explanations for J2 doing better on the test than locally, and both are hypotheses about data we cannot see: the hidden benchmarks may be more homogeneous inside than the public ones, or `labeled` may carry more co-sampled pairs per benchmark than our `bench/10` scope assumes. We tested the second one locally. In the benchmark scope the scored pair sets are nested, so the 31 pairs of `bench/10` are scored again with 20 and 40 co-sampled pairs per benchmark. On those 31 pairs J2 moves from 0.1967 to 0.1955 and 0.1951 (3 seeds each, all `--strict`; `report/runs/item8.py`). Most of the change is seed 2 (0.1975 to 0.1931); seeds 0 and 1 move by 0.0002. In our data, then, more co-sampled pairs account for at most 0.002 of the 0.008 by which J2 improves on the test. The first explanation, more homogeneous hidden benchmarks, remains untested.
 
 ### 6.3 Where the gap comes from
 
-The B0 column of Table 3 isolates the first cause. At k = 0 J2 predicts 0.5, and its B0 is exactly 0.2500 in all [CORTE] 22 draws. This also shows that at checkpoint 0 `labeled` holds no label of another system on the same benchmark, otherwise p0 would move. J4 is J1 with the metadata offset turned off and nothing else changed. Its B0 is 0.250 against 0.318 for J1, while locally the two were close (`pair` ALC 0.1974 against 0.1964, B0 0.250 against 0.246, Table 2). We infer, without direct evidence, that the metadata offset is what hurts, since we do not see the test subjects: in J1 a 2026 system with high reasoning effort gets 0.673 at k = 0 from the year and reasoning offsets, which would cost Brier if the test pairs have low or mixed rates. The arms that apply a learned level or metadata shift at k = 0 have B0 above 0.25, the score of the constant 0.5 ([CORTE] l0 0.253, l3 0.271, l6 0.303, J1 0.318); A v6 is the exception at 0.246.
+The B0 column of Table 3 isolates the first cause. At k = 0 J2 predicts 0.5, and its B0 is exactly 0.2500 in all 39 draws. This also shows that at checkpoint 0 `labeled` holds no label of another system on the same benchmark, otherwise p0 would move. J4 is J1 with the metadata offset turned off and nothing else changed. Its B0 is 0.250 against 0.318 for J1, while locally the two were close (`pair` ALC 0.1974 against 0.1964, B0 0.250 against 0.246, Table 2). We infer, without direct evidence, that the metadata offset is what hurts, since we do not see the test subjects: in J1 a 2026 system with high reasoning effort gets 0.673 at k = 0 from the year and reasoning offsets, which would cost Brier if the test pairs have low or mixed rates. The arms that apply a learned level or metadata shift at k = 0 have B0 above 0.25, the score of the constant 0.5 (l0 0.252, l3 0.271, l6 0.303, J1 0.318); A v6 is the exception at 0.246.
 
 The second cause is the level prior. On the public pool, a prior fitted to the binary benchmarks is too narrow for a benchmark at rate 0.64 or 0.78, and the stress folds show it. A simulation with the real pair rates (`paiec/advisor/check4_prior_shift.py`, not in the public repository) gives a macro ALC of 0.2548 on the two high-rate benchmarks for a prior N(-1.2, 1.0), against 0.2089 for N(-0.6, 2.0). Line J resampled each test benchmark from its own Rasch fit with a shifted level, q from 0.05 to 0.95 (`lines/J_robusto/jsim.py`, at most 30 pairs per benchmark). In the `pair` scope the mean over q is 0.1811 for l0, 0.1665 for J1 and 0.1685 for J2, and the worst B0 over q is 0.465 for l0. We used that simulator to move toward J1 and J2. On the test, the spread arms l3 and l6 had higher means than l0, which suggests that the hidden levels were not simply high; with 5 submissions each, this is not a tested result. A prior centred at 0.5 without metadata (J2, J4) was the safe choice at k = 0.
 
-At larger budgets the gap shrinks. J1 has the best B3 to B31 on the test (B31 [CORTE] 0.149 against 0.163 for J2), so its Rasch structure helps once the pair has its own labels. J3 tried to combine J2 at k = 0 with J1 later; it ends level with J2 ([CORTE] 0.1888 against 0.1881, h19 inconclusive).
+At larger budgets the gap shrinks. J1 has the best B3 to B31 on the test (B31 0.149 against 0.165 for J2), so its Rasch structure helps once the pair has its own labels. J3 tried to combine J2 at k = 0 with J1 later; it ends level with J2 (0.1888 against 0.1892, h19 inconclusive).
 
 ## 7. What we explored and why it did not enter
 
@@ -207,7 +207,7 @@ Two rows deserve a sentence more. The text regression is a case of concept shift
 
 ## 8. Limitations
 
-- The formative runs are the only hidden-test evidence, with [CORTE] 5 to 25 draws per arm and about 9 pairs per draw. Differences between our arms are inside the intervals, and every pairwise verdict between them is inconclusive.
+- The formative runs are the only hidden-test evidence, with 5 to 40 draws per arm and about 9 pairs per draw. Differences between our arms are inside the intervals, and every pairwise verdict between them is inconclusive.
 - Formative draws are not paired across arms, so the comparison is between independent samples and loses power.
 - Local LOBO has four folds, one with a single pair, and 59% of the pairs are from multi_swebench. Seed standard deviations measure pool-split noise, not benchmark-to-benchmark variation.
 - The explanation of the B0 failure through metadata offsets is an inference from the J1 against J4 contrast; we do not see the test subjects.
@@ -245,7 +245,7 @@ Training data: `aims-foundations/measurement-db` only [3]; no external leaderboa
 
 ## References
 
-[1] AIMS Lab, Stanford. "Predictive AI Evaluation Competition." https://aimslab.stanford.edu/competition (accessed 2026-10-13).
+[1] AIMS Lab, Stanford. "Predictive AI Evaluation Competition." https://aims.stanford.edu/competition (accessed 2026-10-13).
 
 [2] AIMS Foundations. "paiec_baseline." GitHub repository, commit 82d330d. https://github.com/aims-foundations/paiec_baseline
 
