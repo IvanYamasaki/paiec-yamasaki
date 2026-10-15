@@ -2,7 +2,7 @@
 
 Team Yamasaki. Ivan Goya Yamasaki, Instituto Tecnológico de Aeronáutica (ITA), Brazil, ivangyamasaki@gmail.com.
 
-Technical report for the Predictive AI Evaluation Competition (PAIEC), NeurIPS 2026 workshop. Draft v5, 2026-10-15. The formative runs were frozen on 2026-10-15; `report/make_table3.py` regenerates Table 3. [TBD] marks items that wait for the author.
+Technical report for the Predictive AI Evaluation Competition (PAIEC), NeurIPS 2026 workshop. Draft v5, 2026-10-15. The formative runs were frozen on 2026-10-15; `report/make_table3.py` regenerates Table 3.
 
 ## Abstract
 
@@ -87,7 +87,7 @@ def predict(input, labeled=None):
     return float((s + CFG["a"] * p0) / (n + CFG["a"]))
 ```
 
-It imports only `json` and `os`, and `check_pack.py` measured a worst case of 4.2 ms per call with 2,542 labels in `labeled`. We submit J2 because no arm beats it under the multiple-comparison correction on the hidden test (Section 6.2) and it is the easiest to audit. J4 has the lowest formative mean (0.1883 against 0.1892), but h21 (J4 against J2) is inconclusive: difference 0.0009, 95% CI [-0.0067, 0.0082], adjusted p 1. We froze the formative phase on 2026-10-15. The final package is the J2 submission 989544 on Codabench (Brier ALC 0.1961 over 9 pairs, status Finished), whose `model.py` and `params.json` have the same sha256 as `lines/J_robusto/submit_J2_min` (`formativo/FINAL.md`). The organizers take the final choice by e-mail, which identifies the selected Codabench submission [1]. [TBD: the e-mail to the organizers is sent by the author.]
+It imports only `json` and `os`, and `check_pack.py` measured a worst case of 4.2 ms per call with 2,542 labels in `labeled`. We submit J2 because no arm beats it under the multiple-comparison correction on the hidden test (Section 6.2) and it is the easiest to audit. J4 has the lowest formative mean (0.1883 against 0.1892), but h21 (J4 against J2) is inconclusive: difference 0.0009, 95% CI [-0.0067, 0.0082], adjusted p 1. We froze the formative phase on 2026-10-15. The final package is the J2 submission 989544 on Codabench (Brier ALC 0.1961 over 9 pairs, status Finished), whose `model.py` and `params.json` have the same sha256 as `lines/J_robusto/submit_J2_min` (`formativo/FINAL.md`). This submission ID is the one given to the organizers in the OpenReview form and by e-mail [1].
 
 ## 6. Results
 
